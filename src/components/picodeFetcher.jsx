@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { TextField, Button, Grid, Card, CardContent, Typography, Snackbar, CircularProgress, Alert } from '@mui/material';
+import { TextField, Button, Grid, Card, CardContent, Typography, Snackbar, CircularProgress, Alert, useMediaQuery } from '@mui/material';
+import { useTheme } from '@mui/system';
 
 function PincodeFetcher() {
     const [pincode, setPincode] = useState('');
@@ -7,6 +8,9 @@ function PincodeFetcher() {
     const [searchTerm, setSearchTerm] = useState('');
     const [loading, setLoading] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm')); // Check if screen size is mobile
 
     const handleFetch = async () => {
         setLoading(true);
@@ -27,7 +31,6 @@ function PincodeFetcher() {
         setSearchTerm(e.target.value);
     };
 
-
     const showSnackbar = (message, severity) => {
         setSnackbar({ open: true, message, severity });
     };
@@ -46,12 +49,11 @@ function PincodeFetcher() {
         );
     }) || [];
 
-
     return (
-        <div style={{ display: 'flex', height: '100vh' }}>
+        <div style={{ display: 'flex', flexDirection: isMobile ? 'column' : 'row', height: '100vh' }}>
 
             {/* Left Split */}
-            <div style={{ flex: 1, backgroundColor: '#f0f0f0', padding: '40px' }}>
+            <div style={{ flex: 1, backgroundColor: '#f0f0f0', padding: '40px', maxWidth: '100%' }}>
                 <Typography variant="h4" gutterBottom>
                     Enter Pincode
                 </Typography>
@@ -69,9 +71,9 @@ function PincodeFetcher() {
             </div>
 
             {/* Right Split */}
-            <div style={{ flex: 2, backgroundColor: '#ffffff', padding: '40px', overflowY: 'auto' }}>
+            <div style={{ flex: 2, backgroundColor: '#ffffff', padding: '40px', overflowY: 'auto', maxWidth: '100%' }}>
                 <Typography variant="h4" gutterBottom>
-                   Fetched Data
+                    Fetched Data
                 </Typography>
 
                 {/* Search Bar */}
@@ -82,12 +84,10 @@ function PincodeFetcher() {
                             variant="outlined"
                             fullWidth
                             value={searchTerm}
-                            //onKeyUp={handleSearchKeyUp}
                             onChange={handleSearchChange}
                             placeholder="Search by Name of the city"
                             style={{ marginBottom: '20px' }}
                         />
-
                     </>
                 )}
 
@@ -101,42 +101,41 @@ function PincodeFetcher() {
                 {/* Results Section */}
                 {!loading && result ? (
                     <>
-                        {/* <Typography variant="h6">Status: {result.Status}</Typography> */}
-                        {/* <Typography variant="h6">Message: {result.Message}</Typography> */}
                         <br />
-                        <Grid container spacing={3}>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
                             {filteredPostOffices.length > 0 ? (
-                                filteredPostOffices.map((office, index) => (
-                                    <Grid item xs={12} sm={6} md={6} key={index}>
-                                        <Card elevation={3}>
+                                filteredPostOffices.map((location, index) => (
+                                    <div key={index} style={{ flex: '1 1 calc(50% - 20px)', boxSizing: 'border-box' }}>
+                                        <Card elevation={3} style={{ width: '100%' }}>
                                             <CardContent>
-                                                <Typography variant="h6" gutterBottom>
-                                                    {office.Name}
+                                                <Typography variant="subtitle1" gutterBottom>
+                                                    {location.Name}
                                                 </Typography>
-                                                <Typography variant="body1">
-                                                    District: {office.District}
+                                                <Typography variant="body2">
+                                                    <strong>District:</strong> {location.District}
                                                 </Typography>
-                                                <Typography variant="body1">
-                                                    State: {office.State}
+                                                <Typography variant="body2">
+                                                    <strong>State:</strong> {location.State}
                                                 </Typography>
-                                                <Typography variant="body1">
-                                                    Country: {office.Country}
-                                                </Typography>
-                                                <Typography variant="body2" color="textSecondary">
-                                                    Pincode: {office.Pincode}
+                                                {/* <Typography variant="body2">
+                                                        Country: {location.Country}
+                                                    </Typography> */}
+                                                <Typography variant="caption" color="textSecondary">
+                                                    Pincode: {location.Pincode}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
-                                    </Grid>
+                                    </div>
                                 ))
                             ) : (
-                                <Grid item xs={12}>
+                                <div style={{ width: '100%' }}>
                                     <Typography variant="h6" align="center" color="textSecondary">
                                         😔 No Name Found With That Letter
                                     </Typography>
-                                </Grid>
+                                </div>
                             )}
-                        </Grid>
+
+                        </div>
                     </>
                 ) : (
                     !loading && <Typography variant="body1">Enter the Pincode Data show Here ...</Typography>
@@ -154,7 +153,6 @@ function PincodeFetcher() {
                     {snackbar.message}
                 </Alert>
             </Snackbar>
-
         </div>
     );
 }
