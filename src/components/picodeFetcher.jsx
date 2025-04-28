@@ -105,7 +105,11 @@ function PincodeFetcher() {
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px' }}>
                             {filteredPostOffices.length > 0 ? (
                                 filteredPostOffices.map((location, index) => (
-                                    <div key={index} style={{ flex: '1 1 calc(50% - 20px)', boxSizing: 'border-box' }}>
+                                    <div
+                                        key={index}
+                                        style={{ flex: '1 1 calc(50% - 20px)', boxSizing: 'border-box', cursor: 'pointer' }}
+                                        onClick={() => window.location.href = `https://www.google.com/maps/search/${location.Name}`}
+                                    >
                                         <Card elevation={3} style={{ width: '100%' }}>
                                             <CardContent>
                                                 <Typography variant="subtitle1" gutterBottom>
@@ -117,9 +121,6 @@ function PincodeFetcher() {
                                                 <Typography variant="body2">
                                                     <strong>State:</strong> {location.State}
                                                 </Typography>
-                                                {/* <Typography variant="body2">
-                                                        Country: {location.Country}
-                                                    </Typography> */}
                                                 <Typography variant="caption" color="textSecondary">
                                                     Pincode: {location.Pincode}
                                                 </Typography>
